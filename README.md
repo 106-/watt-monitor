@@ -35,6 +35,7 @@ make sync
 ```sh
 make poll    # センサーの値をポーリング表示
 make probe   # Grafana Cloud への疎通確認（架空データ送信）
+make run     # monitor.pyをフォアグラウンドで実行
 make install # systemdサービスとしてインストール・起動
 ```
 

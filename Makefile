@@ -4,7 +4,7 @@ UV           := $(shell which uv)
 SERVICE_USER := $(shell whoami)
 SERVICE_DEST := /etc/systemd/system/$(SERVICE_NAME).service
 
-.PHONY: install uninstall sync poll probe
+.PHONY: install uninstall sync poll probe run
 
 sync:
 	uv sync
@@ -20,6 +20,9 @@ install: sync
 	sudo systemctl enable $(SERVICE_NAME)
 	sudo systemctl start $(SERVICE_NAME)
 	@echo "Installed: $(SERVICE_DEST)"
+
+run:
+	uv run python monitor.py
 
 poll:
 	uv run python poll.py
