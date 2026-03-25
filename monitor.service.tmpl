@@ -7,10 +7,11 @@ WantedBy = multi-user.target
 
 [Service]
 Type = simple
-User = pi
-WorkingDirectory = hoge
-EnvironmentFile = hoge
-ExecStart = hoge
+User = @USER@
+Group = dialout
+WorkingDirectory = @PROJECT_DIR@
+EnvironmentFile = @PROJECT_DIR@/monitor.env
+ExecStart = @UV@ run --project @PROJECT_DIR@ python @PROJECT_DIR@/monitor.py
 ExecStop = /bin/kill ${MAINPID}
 KillSignal = SIGCONT
 Restart = always

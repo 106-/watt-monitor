@@ -1,3 +1,4 @@
 .vscode
-influxdb/
-grafana/
+.venv
+*.env
+__pycache__/
