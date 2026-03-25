@@ -1,6 +1,7 @@
 [Unit]
 Description = Script to Send Power Consumption
-After=network.target
+After=network-online.target
+Wants=network-online.target
 
 [Install]
 WantedBy = multi-user.target
@@ -10,8 +11,5 @@ Type = simple
 User = @USER@
 Group = dialout
 WorkingDirectory = @PROJECT_DIR@
-EnvironmentFile = @PROJECT_DIR@/monitor.env
 ExecStart = @UV@ run --project @PROJECT_DIR@ python @PROJECT_DIR@/monitor.py
-ExecStop = /bin/kill ${MAINPID}
-KillSignal = SIGCONT
-Restart = always
+Restart = on-failure
