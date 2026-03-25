@@ -1,11 +1,12 @@
 import math
+import time
 
 from gpiozero import MCP3008
 
 resist = 460  # CTセンサに付けている負荷抵抗
 rate = 3000  # CTセンサの変換比
 max_voltage = 5.00  # 回路の最大電圧
-num_sampling = 100  # サンプリング数
+sample_duration = 0.1  # サンプリング時間(秒) = 50Hzの5周期分
 effective_voltage = 100  # 交流電源の実効電圧
 
 # `pot.value`の値は0から1の範囲
@@ -30,5 +31,18 @@ def power() -> float:
 
 
 def rms_power() -> float:
-    """num_samplingサンプルのRMS電力を返す"""
-    return math.sqrt(sum(power() ** 2 for _ in range(num_sampling)) / num_sampling)
+    """sample_duration秒間のサンプルを使ったRMS電力を返す"""
+    samples = []
+    deadline = time.monotonic() + sample_duration
+    while time.monotonic() < deadline:
+        samples.append(power() ** 2)
+    return math.sqrt(sum(samples) / len(samples))
+
+
+def rms_power_test() -> tuple[float, int]:
+    """rms_powerと同じ計測を行い、(RMS電力, サンプル数)を返す"""
+    samples = []
+    deadline = time.monotonic() + sample_duration
+    while time.monotonic() < deadline:
+        samples.append(power() ** 2)
+    return math.sqrt(sum(samples) / len(samples)), len(samples)
