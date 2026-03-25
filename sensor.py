@@ -8,13 +8,24 @@ rate = 3000  # CTセンサの変換比
 max_voltage = 5.00  # 回路の最大電圧
 sample_duration = 0.1  # サンプリング時間(秒) = 50Hzの5周期分
 effective_voltage = 100  # 交流電源の実効電圧
+warmup_duration = 5.0  # ウォームアップ時間(秒)
 
 # `pot.value`の値は0から1の範囲
 pot = MCP3008(channel=0, max_voltage=max_voltage)
 
+
+def _warmup() -> float:
+    """ウォームアップ: warmup_duration秒間サンプリングしてmin/maxの中点をbiasとして返す"""
+    values = []
+    deadline = time.monotonic() + warmup_duration
+    while time.monotonic() < deadline:
+        values.append(pot.value)
+    return (max(values) + min(values)) / 2
+
+
 # 2.5Vに分圧しているので`pot.value`の平均は0.5になるはずだが, 実際には少しずれている.
-# それがこの変数である.
-bias = 0.492533
+# ウォームアップ時のmin/maxの中点を使って自動補正する.
+bias = _warmup()
 
 
 def power() -> float:

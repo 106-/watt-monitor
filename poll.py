@@ -1,6 +1,9 @@
 import time
 
+import sensor
 from sensor import rms_power_test
+
+print(f"Warmup done: bias = {sensor.bias:.6f}")
 
 count = 0
 rate = 0.0
